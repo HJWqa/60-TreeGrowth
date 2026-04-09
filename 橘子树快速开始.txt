@@ -1,0 +1,92 @@
+🍊 橘子树模型系统 - 快速开始指南
+=====================================
+
+恭喜！橘子树程序化模型生成系统已经创建完成！
+
+📦 已创建的文件：
+-----------------
+1. OrangeTreeGenerator.cs - 核心生成器（程序化创建橘子树模型）
+2. OrangeTreeGeneratorEditor.cs - Unity编辑器工具窗口
+3. OrangeTreePreview.cs - 场景预览组件
+4. OrangeTreePreviewEditor.cs - 预览组件的自定义Inspector
+
+🚀 三种使用方法：
+-----------------
+
+【方法一：一键生成所有预制体】（推荐用于正式使用）
+1. 打开Unity编辑器
+2. 顶部菜单：TreePlanQAQ → Generate Orange Tree Models
+3. 点击"生成所有橘子树模型"按钮
+4. 生成的预制体保存在：Assets/Prefabs/Plants/OrangeTrees/
+5. 将预制体拖到PlantGrowthController的Stage Configs中使用
+
+【方法二：场景实时预览】（推荐用于调试和查看效果）
+1. 在场景中创建空物体（GameObject → Create Empty）
+2. 添加组件：OrangeTreePreview
+3. 在Inspector中：
+   - 选择要预览的阶段（Preview Stage）
+   - 勾选"Show All Stages"可以同时看到所有10个阶段
+   - 点击"生成预览"按钮
+4. 场景中会立即显示橘子树模型
+
+【方法三：代码调用】（用于运行时动态生成）
+using TreePlanQAQ.Plant;
+
+GameObject tree = OrangeTreeGenerator.CreateOrangeTreeModel(PlantStage.Harvest);
+tree.transform.position = new Vector3(0, 0, 0);
+
+🌳 橘子树的10个生长阶段：
+-------------------------
+1. 🌰 Seed - 种子（椭圆形小种子）
+2. 🌱 Sprout - 发芽（细茎+两片叶）
+3. 🌿 Seedling - 幼苗（主茎+多层叶片）
+4. 🌳 YoungTree - 小树（开始有树干和分支）
+5. 🌲 MatureTree - 成树（茂密树冠）
+6. 🌸 Flowering - 开花（白色小花）
+7. 🍏 Fruiting - 结果（青色小橘子）
+8. 🍊 Harvest - 成熟（橙色大橘子）
+9. 🍂 Dormant - 休眠（落叶只剩枝干）
+10. 💀 Dead - 枯死（倾斜枯萎）
+
+🎨 橘子树特色：
+--------------
+✓ 深绿色叶子（橘子树特有的颜色）
+✓ 白色花朵（开花阶段）
+✓ 果实颜色变化：青色 → 黄色 → 橙色
+✓ 真实的分支结构
+✓ 每个阶段都有独特的形态
+
+🔧 与现有系统集成：
+------------------
+1. 生成橘子树预制体（方法一）
+2. 打开场景中的PlantGrowthController对象
+3. 在Inspector的"Stage Configs"列表中
+4. 将对应的橘子树预制体拖到每个阶段的"Stage Model"字段
+5. 运行游戏，橘子树会根据温湿度自动生长！
+
+💡 提示：
+--------
+• 生成的是程序化模型，适合原型开发
+• 所有模型使用基础几何体，性能开销小
+• 可以在OrangeTreeGenerator.cs中修改颜色和尺寸
+• 支持HDRP/URP/Built-in渲染管线
+
+📝 下一步建议：
+--------------
+1. 先用"方法二"在场景中预览所有阶段
+2. 满意后用"方法一"生成预制体
+3. 将预制体集成到PlantGrowthController
+4. 调整GrowthConfig参数来控制生长速度
+
+🐛 常见问题：
+------------
+Q: 模型是粉红色的？
+A: 检查项目的渲染管线设置，确保shader正确
+
+Q: 找不到生成菜单？
+A: 等待Unity编译完成，确保Editor文件夹结构正确
+
+Q: 想修改橘子的颜色？
+A: 编辑OrangeTreeGenerator.cs顶部的颜色常量
+
+祝你的橘子树茁壮成长！🍊🌳

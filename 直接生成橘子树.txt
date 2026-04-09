@@ -1,0 +1,136 @@
+🍊 直接生成橘子树的方法
+========================================
+
+如果菜单项 TreePlanQAQ 没有显示，可以用以下方法：
+
+========================================
+方法1: 使用代码直接生成
+========================================
+
+1. 在Unity中创建一个空物体
+2. 添加 OrangeTreePreview 组件
+3. 在Inspector中:
+   - 勾选 "Show All Stages"
+   - 点击 "Generate Preview" 按钮
+4. 所有10个阶段会在场景中显示
+
+然后手动保存为预制体:
+   - 选中每个生成的模型
+   - 拖拽到 Project 窗口
+   - 保存到 Assets/Prefabs/Plants/OrangeTrees/
+
+========================================
+方法2: 检查Unity编译状态
+========================================
+
+1. 打开 Unity Console 窗口
+2. 查看是否有编译错误
+3. 如果有错误，先解决错误
+4. 等待 Unity 完成编译（右下角进度条）
+5. 编译完成后，菜单应该会出现
+
+========================================
+方法3: 强制重新编译
+========================================
+
+1. 在Unity中，菜单: Assets → Reimport All
+2. 等待重新导入完成
+3. 或者关闭Unity，删除 Library 文件夹，重新打开
+
+========================================
+方法4: 检查菜单是否存在
+========================================
+
+1. 在Unity顶部菜单栏查找 "TreePlanQAQ"
+2. 如果没有，尝试查找:
+   - Window → TreePlanQAQ
+   - Tools → TreePlanQAQ
+   - GameObject → TreePlanQAQ
+
+========================================
+方法5: 使用测试菜单
+========================================
+
+1. 查找菜单: TreePlanQAQ → Test Menu Item
+2. 如果这个能显示，说明菜单系统正常
+3. 那么其他菜单项也应该能显示
+
+========================================
+方法6: 手动运行代码
+========================================
+
+在Unity中创建一个临时脚本:
+
+```csharp
+using UnityEngine;
+using UnityEditor;
+using TreePlanQAQ.Plant;
+
+public class GenerateOrangeTrees : MonoBehaviour
+{
+    [ContextMenu("生成所有橘子树")]
+    void GenerateAll()
+    {
+        PlantStage[] stages = new PlantStage[]
+        {
+            PlantStage.Seed,
+            PlantStage.Sprout,
+            PlantStage.Seedling,
+            PlantStage.YoungTree,
+            PlantStage.MatureTree,
+            PlantStage.Flowering,
+            PlantStage.Fruiting,
+            PlantStage.Harvest,
+            PlantStage.Dormant,
+            PlantStage.Dead
+        };
+        
+        foreach (PlantStage stage in stages)
+        {
+            GameObject model = OrangeTreeGenerator.CreateOrangeTreeModel(stage);
+            model.transform.position = Vector3.zero;
+            
+            #if UNITY_EDITOR
+            string path = $"Assets/Prefabs/Plants/OrangeTrees/OrangeTree_{stage}.prefab";
+            PrefabUtility.SaveAsPrefabAsset(model, path);
+            DestroyImmediate(model);
+            Debug.Log($"生成: {path}");
+            #endif
+        }
+        
+        #if UNITY_EDITOR
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+        Debug.Log("✅ 所有橘子树生成完成！");
+        #endif
+    }
+}
+```
+
+使用方法:
+1. 创建空物体
+2. 添加这个脚本
+3. 右键点击组件
+4. 选择 "生成所有橘子树"
+
+========================================
+常见问题
+========================================
+
+Q: 为什么菜单不显示？
+A: 可能原因:
+   - Unity还在编译中
+   - 有编译错误
+   - 脚本不在Editor文件夹中
+   - Unity版本不兼容
+
+Q: 如何确认脚本已编译？
+A: 查看Unity右下角，没有进度条就是编译完成
+
+Q: 生成的模型在哪里？
+A: Assets/Prefabs/Plants/OrangeTrees/
+
+Q: 可以修改输出路径吗？
+A: 可以，在代码中修改 OUTPUT_PATH 常量
+
+========================================

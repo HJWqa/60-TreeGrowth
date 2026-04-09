@@ -1,0 +1,10 @@
+{
+    "httpPort": 5173,
+    "ipcPort": 52100,
+    "host": "127.0.0.1",
+    "autoStart": true,
+    "autoConnect": true,
+    "authEnabled": false,
+    "authToken": "SFH8BTr8VE54U8K5lx5N7sJfaXpkUzHB",
+    "verboseLogging": false
+}
