@@ -60,6 +60,7 @@ public class ResetButtonController : MonoBehaviour
         {
             // 显示确认对话框
             confirmPanel.SetActive(true);
+            UIMaskController.OnPanelOpened();
             Debug.Log("📋 显示重置确认对话框");
         }
         else
@@ -79,6 +80,7 @@ public class ResetButtonController : MonoBehaviour
         if (confirmPanel != null)
         {
             confirmPanel.SetActive(false);
+            UIMaskController.OnPanelClosed(confirmPanel);
         }
         
         ResetScene();
@@ -94,6 +96,7 @@ public class ResetButtonController : MonoBehaviour
         if (confirmPanel != null)
         {
             confirmPanel.SetActive(false);
+            UIMaskController.OnPanelClosed(confirmPanel);
         }
     }
 
@@ -133,6 +136,7 @@ public class ResetButtonController : MonoBehaviour
         if (confirmPanel != null)
         {
             confirmPanel.SetActive(false);
+            UIMaskController.OnPanelClosed(confirmPanel);
             Debug.Log("  ✓ 已关闭确认对话框");
         }
         

@@ -65,6 +65,7 @@ public class HarvestMessageUI : MonoBehaviour
         
         // 显示面板
         messagePanel.SetActive(true);
+        UIMaskController.OnPanelOpened();
         
         Debug.Log($"🎉 显示收获消息: {yield}kg");
         
@@ -87,6 +88,7 @@ public class HarvestMessageUI : MonoBehaviour
         if (messagePanel != null)
         {
             messagePanel.SetActive(false);
+            UIMaskController.OnPanelClosed(messagePanel);
         }
         
         if (autoHideCoroutine != null)

@@ -19,6 +19,8 @@ public class TopIconsController : MonoBehaviour
     [Header("面板引用")]
     [SerializeField] private GameObject settingsPanel;   // 设置面板
     [SerializeField] private GameObject hintPanel;       // 提示面板
+    [SerializeField] private Button settingsCloseButton; // 设置面板关闭按钮
+    [SerializeField] private Button hintCloseButton;     // 提示面板关闭按钮
     
     [Header("目标控制器")]
     [SerializeField] private OrangeTreeController treeController;
@@ -62,6 +64,95 @@ public class TopIconsController : MonoBehaviour
         
         // 初始化暂停图标
         UpdatePauseIcon();
+
+        // 自动绑定面板内的关闭按钮
+        BindPanelCloseButtons();
+    }
+
+    private void BindPanelCloseButtons()
+    {
+        if (settingsCloseButton == null && settingsPanel != null)
+        {
+            settingsCloseButton = FindCloseButton(settingsPanel.transform);
+        }
+
+        if (hintCloseButton == null && hintPanel != null)
+        {
+            hintCloseButton = FindCloseButton(hintPanel.transform);
+        }
+
+        if (settingsCloseButton != null)
+        {
+            settingsCloseButton.onClick.RemoveAllListeners();
+            settingsCloseButton.onClick.AddListener(CloseSettingsPanel);
+        }
+
+        if (hintCloseButton != null)
+        {
+            hintCloseButton.onClick.RemoveAllListeners();
+            hintCloseButton.onClick.AddListener(CloseHintPanel);
+        }
+    }
+
+    private Button FindCloseButton(Transform panelRoot)
+    {
+        if (panelRoot == null)
+        {
+            return null;
+        }
+
+        Transform[] children = panelRoot.GetComponentsInChildren<Transform>(true);
+        foreach (Transform child in children)
+        {
+            if (child.name == "CloseButton")
+            {
+                Button closeBtn = child.GetComponent<Button>();
+                if (closeBtn != null)
+                {
+                    return closeBtn;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private void CloseSettingsPanel()
+    {
+        if (settingsPanel == null || !settingsPanel.activeSelf)
+        {
+            return;
+        }
+
+        settingsPanel.SetActive(false);
+        UIMaskController.OnPanelClosed(settingsPanel, hintPanel);
+
+        if (treeController != null && !wasPausedBeforePanel && treeController.IsPaused)
+        {
+            treeController.TogglePause();
+            Debug.Log("关闭设置面板，恢复果树生长");
+        }
+
+        Debug.Log("设置面板: 关闭");
+    }
+
+    private void CloseHintPanel()
+    {
+        if (hintPanel == null || !hintPanel.activeSelf)
+        {
+            return;
+        }
+
+        hintPanel.SetActive(false);
+        UIMaskController.OnPanelClosed(settingsPanel, hintPanel);
+
+        if (treeController != null && !wasPausedBeforePanel && treeController.IsPaused)
+        {
+            treeController.TogglePause();
+            Debug.Log("关闭提示面板，恢复果树生长");
+        }
+
+        Debug.Log("提示面板: 关闭");
     }
 
     /// <summary>
@@ -90,6 +181,7 @@ public class TopIconsController : MonoBehaviour
                 }
                 
                 settingsPanel.SetActive(true);
+                UIMaskController.OnPanelOpened();
                 
                 // 关闭提示面板
                 if (hintPanel != null)
@@ -99,15 +191,7 @@ public class TopIconsController : MonoBehaviour
             }
             else
             {
-                // 关闭设置面板
-                settingsPanel.SetActive(false);
-                
-                // 恢复之前的暂停状态
-                if (treeController != null && !wasPausedBeforePanel && treeController.IsPaused)
-                {
-                    treeController.TogglePause();
-                    Debug.Log("关闭设置面板，恢复果树生长");
-                }
+                CloseSettingsPanel();
             }
             
             Debug.Log($"设置面板: {(settingsPanel.activeSelf ? "打开" : "关闭")}");
@@ -144,6 +228,7 @@ public class TopIconsController : MonoBehaviour
                 }
                 
                 hintPanel.SetActive(true);
+                UIMaskController.OnPanelOpened();
                 
                 // 关闭设置面板
                 if (settingsPanel != null)
@@ -153,15 +238,7 @@ public class TopIconsController : MonoBehaviour
             }
             else
             {
-                // 关闭提示面板
-                hintPanel.SetActive(false);
-                
-                // 恢复之前的暂停状态
-                if (treeController != null && !wasPausedBeforePanel && treeController.IsPaused)
-                {
-                    treeController.TogglePause();
-                    Debug.Log("关闭提示面板，恢复果树生长");
-                }
+                CloseHintPanel();
             }
             
             Debug.Log($"提示面板: {(hintPanel.activeSelf ? "打开" : "关闭")}");
@@ -233,6 +310,11 @@ public class TopIconsController : MonoBehaviour
             hintPanel.SetActive(false);
             anyPanelWasOpen = true;
         }
+
+        if (anyPanelWasOpen)
+        {
+            UIMaskController.OnPanelClosed(settingsPanel, hintPanel);
+        }
         
         // 如果有面板被关闭，且之前不是暂停状态，则恢复运行
         if (anyPanelWasOpen && treeController != null && !wasPausedBeforePanel && treeController.IsPaused)
@@ -252,5 +334,11 @@ public class TopIconsController : MonoBehaviour
         
         if (pauseButton != null)
             pauseButton.onClick.RemoveAllListeners();
+
+        if (settingsCloseButton != null)
+            settingsCloseButton.onClick.RemoveAllListeners();
+
+        if (hintCloseButton != null)
+            hintCloseButton.onClick.RemoveAllListeners();
     }
 }
