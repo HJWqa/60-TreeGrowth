@@ -2,7 +2,9 @@
   "mcpServers": {
     "unity": {
       "command": "node",
-      "args": ["C:\\Users\\36785\\mcp-server-unity\\build\\simple-index.js"],
+      "args": [
+        "C:\\Users\\36785\\mcp-server-unity\\build\\simple-index.js"
+      ],
       "env": {
         "UNITY_PROJECT_PATH": "C:\\Users\\36785\\Desktop\\Program\\TreePlanQAQ\\TreePlanQAQ"
       },
@@ -12,7 +14,8 @@
         "read_file",
         "write_file",
         "list_files",
-        "get_project_info"
+        "get_project_info",
+        "script_create"
       ]
     }
   }

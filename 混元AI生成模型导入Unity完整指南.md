@@ -17,7 +17,7 @@
 1. **打开你的混元模型**
    - 在 Blender 中打开 .blend 文件
 
-2. **切换到 Cycles 渲染引擎**
+2. **切换到 Cycles 渲![alt text](image.png)染引擎**
    - 右侧属性面板
    - Render Properties（相机图标）
    - Render Engine: **Cycles**
