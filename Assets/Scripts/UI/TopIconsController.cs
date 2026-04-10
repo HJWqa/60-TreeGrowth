@@ -195,6 +195,10 @@ public class TopIconsController : MonoBehaviour
                 
                 settingsPanel.SetActive(true);
                 UIMaskController.OnPanelOpened();
+                if (GlobalButtonClickSfx.Instance != null)
+                {
+                    GlobalButtonClickSfx.Instance.PlayPopupOpen();
+                }
                 
                 // 关闭提示面板
                 if (hintPanel != null)
@@ -243,6 +247,10 @@ public class TopIconsController : MonoBehaviour
                 
                 hintPanel.SetActive(true);
                 UIMaskController.OnPanelOpened();
+                if (GlobalButtonClickSfx.Instance != null)
+                {
+                    GlobalButtonClickSfx.Instance.PlayPopupOpen();
+                }
                 
                 // 关闭设置面板
                 if (settingsPanel != null)

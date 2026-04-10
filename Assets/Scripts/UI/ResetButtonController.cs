@@ -19,6 +19,7 @@ public class ResetButtonController : MonoBehaviour
     
     [Header("重置选项")]
     [SerializeField] private bool showConfirmDialog = true; // 是否显示确认对话框
+    [SerializeField] private float resetDelayAfterConfirm = 0.08f; // 给点击音效留出播放时间
 
     private void Start()
     {
@@ -61,6 +62,10 @@ public class ResetButtonController : MonoBehaviour
             // 显示确认对话框
             confirmPanel.SetActive(true);
             UIMaskController.OnPanelOpened();
+            if (GlobalButtonClickSfx.Instance != null)
+            {
+                GlobalButtonClickSfx.Instance.PlayPopupOpen();
+            }
             Debug.Log("📋 显示重置确认对话框");
         }
         else
@@ -75,6 +80,11 @@ public class ResetButtonController : MonoBehaviour
     /// </summary>
     private void OnConfirmYes()
     {
+        if (GlobalButtonClickSfx.Instance != null)
+        {
+            GlobalButtonClickSfx.Instance.PlayClick();
+        }
+
         Debug.Log("✅ 确认重新开始");
         
         if (confirmPanel != null)
@@ -82,7 +92,18 @@ public class ResetButtonController : MonoBehaviour
             confirmPanel.SetActive(false);
             UIMaskController.OnPanelClosed(confirmPanel);
         }
-        
+
+        StartCoroutine(ResetSceneAfterDelay());
+    }
+
+    private System.Collections.IEnumerator ResetSceneAfterDelay()
+    {
+        float delay = Mathf.Max(0f, resetDelayAfterConfirm);
+        if (delay > 0f)
+        {
+            yield return new WaitForSecondsRealtime(delay);
+        }
+
         ResetScene();
     }
 
