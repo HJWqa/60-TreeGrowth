@@ -18,6 +18,11 @@ public class TipPanel : MonoBehaviour
 
     private void Start()
     {
+        if (gameObject.activeInHierarchy)
+        {
+            UIMaskController.OnPanelOpened();
+        }
+
         if (confirmButton != null)
         {
             confirmButton.onClick.AddListener(OnConfirmButtonClicked);
@@ -62,6 +67,7 @@ public class TipPanel : MonoBehaviour
     {
         // 只隐藏提示面板，不切换场景
         gameObject.SetActive(false);
+        UIMaskController.OnPanelClosed(gameObject);
         Debug.Log("✅ 提示面板已隐藏");
     }
     

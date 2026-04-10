@@ -9,6 +9,8 @@ using TreePlanQAQ.OrangeTree;
 /// </summary>
 public class HarvestMessageUI : MonoBehaviour
 {
+    private const string HarvestClipResourcePath = "Audio/tada";
+
     [Header("UI引用")]
     [SerializeField] private GameObject messagePanel;
     [SerializeField] private Text messageText;
@@ -17,9 +19,11 @@ public class HarvestMessageUI : MonoBehaviour
     [Header("显示设置")]
     [SerializeField] private float autoHideDuration = 5f; // 自动隐藏时间（秒）
     [SerializeField] private bool autoHide = true; // 是否自动隐藏
+    [SerializeField] [Range(0f, 1f)] private float harvestSfxVolume = 1f;
     
     private OrangeTreeController treeController;
     private Coroutine autoHideCoroutine;
+    private AudioClip harvestClip;
     
     private void Start()
     {
@@ -65,6 +69,8 @@ public class HarvestMessageUI : MonoBehaviour
         
         // 显示面板
         messagePanel.SetActive(true);
+        UIMaskController.OnPanelOpened();
+        PlayHarvestSfx();
         
         Debug.Log($"🎉 显示收获消息: {yield}kg");
         
@@ -87,6 +93,7 @@ public class HarvestMessageUI : MonoBehaviour
         if (messagePanel != null)
         {
             messagePanel.SetActive(false);
+            UIMaskController.OnPanelClosed(messagePanel);
         }
         
         if (autoHideCoroutine != null)
@@ -103,6 +110,29 @@ public class HarvestMessageUI : MonoBehaviour
     {
         yield return new WaitForSeconds(autoHideDuration);
         HideMessage();
+    }
+
+    private void PlayHarvestSfx()
+    {
+        if (harvestClip == null)
+        {
+            harvestClip = Resources.Load<AudioClip>(HarvestClipResourcePath);
+        }
+
+        if (harvestClip == null)
+        {
+            Debug.LogWarning("[Audio] Harvest clip not found at Resources/Audio/tada");
+            return;
+        }
+
+        Vector3 playPos = Vector3.zero;
+        Camera mainCamera = Camera.main;
+        if (mainCamera != null)
+        {
+            playPos = mainCamera.transform.position;
+        }
+
+        AudioSource.PlayClipAtPoint(harvestClip, playPos, harvestSfxVolume);
     }
     
     private void OnDestroy()

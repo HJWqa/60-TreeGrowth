@@ -116,6 +116,7 @@ namespace TreePlanQAQ.UI
             if (uiToHide != null)
             {
                 uiToHide.SetActive(false);
+                UIMaskController.OnPanelClosed(uiToHide);
                 Debug.Log($"✅ 已隐藏UI: {uiToHide.name}");
             }
         }
@@ -128,6 +129,7 @@ namespace TreePlanQAQ.UI
             if (uiToHide != null)
             {
                 uiToHide.SetActive(true);
+                UIMaskController.OnPanelOpened();
                 
                 if (canvasGroup != null)
                 {
