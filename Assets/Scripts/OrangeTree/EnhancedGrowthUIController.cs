@@ -217,7 +217,10 @@ namespace TreePlanQAQ.OrangeTree
                 case OrangeTreeStage.MatureTree: return "成树";
                 case OrangeTreeStage.Fruiting: return "结果";
                 case OrangeTreeStage.Harvest: return "成熟";
-                default: return stage.ToString();
+                default: 
+                    // 处理由于移除开花阶段导致的旧存档数据遗留问题
+                    if ((int)stage >= 6) return "成熟";
+                    return stage.ToString();
             }
         }
         

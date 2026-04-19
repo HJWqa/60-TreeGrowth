@@ -265,6 +265,22 @@ namespace TreePlanQAQ.OrangeTree
                 stages.Add(new StageData(OrangeTreeStage.Fruiting, "结果", 90f));
                 stages.Add(new StageData(OrangeTreeStage.Harvest, "成熟", 100f));
             }
+            else
+            {
+                // 检查并补全缺失的阶段，比如后期在枚举里加了新阶段但 Inspector 还没更新的情况
+                foreach (OrangeTreeStage stageEnum in Enum.GetValues(typeof(OrangeTreeStage)))
+                {
+                    if (!stages.Exists(s => s.stage == stageEnum))
+                    {
+                        float fallbackThreshold = (float)stageEnum * 15f; // 简单猜测个阈值
+                        stages.Add(new StageData(stageEnum, stageEnum.ToString(), fallbackThreshold));
+                        Debug.LogWarning($"自动在阶段列表中补全了缺失的阶段: {stageEnum}");
+                    }
+                }
+                
+                // 确保数据仍然按阈值排序
+                stages.Sort((a, b) => a.growthThreshold.CompareTo(b.growthThreshold));
+            }
         }
         
         /// <summary>
@@ -323,14 +339,38 @@ namespace TreePlanQAQ.OrangeTree
             
             StageData stageData = stages.Find(s => s.stage == currentStage);
             
+            // 1. 尝试直接使用已配置的模型
             if (stageData != null && stageData.stageModel != null)
             {
                 currentModel = stageData.stageModel;
                 currentModel.SetActive(true);
             }
+            // 2. 如果数据存在但模型为空，尝试自动在子物体中寻找
+            else if (stageData != null && stageData.stageModel == null)
+            {
+                // 先找阶段同名的，再找带有 OrangeTree_ 前缀的
+                Transform modelTrans = transform.Find(currentStage.ToString());
+                if (modelTrans == null)
+                {
+                    modelTrans = transform.Find($"OrangeTree_{currentStage}");
+                }
+
+                if (modelTrans != null)
+                {
+                    stageData.stageModel = modelTrans.gameObject;
+                    currentModel = stageData.stageModel;
+                    currentModel.SetActive(true);
+                    Debug.Log($"自动绑定了阶模型: {currentStage}");
+                }
+                else
+                {
+                    Debug.LogWarning($"未找到阶段 {currentStage} 的模型，请在 Inspector 中手动指定，或确保子物体名称与阶段名称（{currentStage} 或 OrangeTree_{currentStage}）一致。");
+                }
+            }
+            // 3. 如果连阶段数据都没有（或者自动寻找失败）
             else
             {
-                Debug.LogWarning($"未找到阶段 {currentStage} 的模型");
+                Debug.LogWarning($"未找到阶段 {currentStage} 的模型，请在 Inspector 中为它手动指定对应的游戏物体。");
             }
         }
         

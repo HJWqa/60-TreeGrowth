@@ -58,7 +58,8 @@ namespace TreePlanQAQ.Editor
             
             // 显示配置信息
             EditorGUILayout.LabelField("当前生长值:", controller.CurrentGrowth.ToString("F2"));
-            EditorGUILayout.LabelField("当前阶段:", controller.CurrentStage.ToString());
+            string stageText = ((int)controller.CurrentStage >= 6) ? "成熟" : controller.CurrentStage.ToString();
+            EditorGUILayout.LabelField("当前阶段:", stageText);
             
             GUILayout.Space(5);
             EditorGUILayout.LabelField("阶段配置:", EditorStyles.boldLabel);

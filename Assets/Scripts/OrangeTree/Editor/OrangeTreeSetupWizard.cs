@@ -9,7 +9,7 @@ namespace TreePlanQAQ.OrangeTree.Editor
     /// </summary>
     public class OrangeTreeSetupWizard : EditorWindow
     {
-        private GameObject[] stageModels = new GameObject[8];
+        private GameObject[] stageModels = new GameObject[7];
         private GrowthConfig config;
         
         [MenuItem("TreePlanQAQ/Orange Tree Setup Wizard")]
@@ -48,10 +48,10 @@ namespace TreePlanQAQ.OrangeTree.Editor
             
             // 步骤2: 模型配置
             GUILayout.Label("步骤2: 阶段模型", EditorStyles.boldLabel);
-            EditorGUILayout.HelpBox("将8个阶段的模型拖拽到下面的槽位中", MessageType.Info);
+            EditorGUILayout.HelpBox("将7个阶段的模型拖拽到下面的槽位中", MessageType.Info);
             
-            string[] stageNames = { "种子", "发芽", "幼苗", "小树", "成树", "开花", "结果", "成熟" };
-            for (int i = 0; i < 8; i++)
+            string[] stageNames = { "种子", "发芽", "幼苗", "小树", "成树", "结果", "成熟" };
+            for (int i = 0; i < 7; i++)
             {
                 stageModels[i] = (GameObject)EditorGUILayout.ObjectField(
                     $"{i}. {stageNames[i]}",
@@ -77,7 +77,7 @@ namespace TreePlanQAQ.OrangeTree.Editor
             
             if (!AllModelsAssigned())
             {
-                EditorGUILayout.HelpBox("请先配置所有8个阶段的模型", MessageType.Warning);
+                EditorGUILayout.HelpBox("请先配置所有7个阶段的模型", MessageType.Warning);
             }
         }
         
@@ -122,10 +122,10 @@ namespace TreePlanQAQ.OrangeTree.Editor
             
             // 配置阶段
             controller.stages.Clear();
-            string[] stageNames = { "种子", "发芽", "幼苗", "小树", "成树", "开花", "结果", "成熟" };
-            float[] thresholds = { 0f, 10f, 25f, 50f, 75f, 90f, 95f, 100f };
+            string[] stageNames = { "种子", "发芽", "幼苗", "小树", "成树", "结果", "成熟" };
+            float[] thresholds = { 0f, 10f, 25f, 50f, 75f, 90f, 100f };
             
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < 7; i++)
             {
                 // 实例化模型
                 GameObject modelInstance = Instantiate(stageModels[i], treeRoot.transform);
