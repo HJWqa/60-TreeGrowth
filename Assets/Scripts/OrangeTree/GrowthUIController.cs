@@ -21,6 +21,9 @@ namespace TreePlanQAQ.OrangeTree
         public Button pauseButton;
         public Button resetButton;
         public Text pauseButtonText;
+        public GameObject startImage;
+        public GameObject pauseImage;
+        private TopIconPressGrayController pausePressGrayController;
         
         [Header("目标")]
         public OrangeTreeController treeController;
@@ -44,6 +47,7 @@ namespace TreePlanQAQ.OrangeTree
             {
                 treeController.OnStageChanged += OnStageChanged;
                 treeController.OnGrowthUpdated += OnGrowthUpdated;
+                treeController.OnPauseStateChanged += OnPauseStateChanged;
             }
             
             if (environmentManager != null)
@@ -57,6 +61,34 @@ namespace TreePlanQAQ.OrangeTree
                 pauseButton.onClick.RemoveAllListeners();
                 pauseButton.onClick.AddListener(OnPauseButtonClicked);
                 Debug.Log("暂停按钮事件已绑定");
+
+                // 允许在 Inspector 不手动拖拽时自动查找图标
+                if (startImage == null)
+                {
+                    Transform startImageTransform = pauseButton.transform.Find("StartImage");
+                    if (startImageTransform != null)
+                    {
+                        startImage = startImageTransform.gameObject;
+                    }
+                }
+
+                if (pauseImage == null)
+                {
+                    Transform pauseImageTransform = pauseButton.transform.Find("PauseImage");
+                    if (pauseImageTransform != null)
+                    {
+                        pauseImage = pauseImageTransform.gameObject;
+                    }
+                }
+
+                pausePressGrayController = pauseButton.GetComponent<TopIconPressGrayController>();
+                if (pausePressGrayController == null)
+                {
+                    pausePressGrayController = pauseButton.gameObject.AddComponent<TopIconPressGrayController>();
+                }
+
+                pausePressGrayController.RefreshCache();
+                pausePressGrayController.SetPressCallbacks(OnPausePressFullyGray, OnPausePressCancelled);
             }
             else
             {
@@ -77,6 +109,7 @@ namespace TreePlanQAQ.OrangeTree
             // 初始更新
             UpdateUI();
             UpdatePauseButtonText();
+            UpdatePauseImages();
         }
         
         private void OnDestroy()
@@ -85,6 +118,7 @@ namespace TreePlanQAQ.OrangeTree
             {
                 treeController.OnStageChanged -= OnStageChanged;
                 treeController.OnGrowthUpdated -= OnGrowthUpdated;
+                treeController.OnPauseStateChanged -= OnPauseStateChanged;
             }
             
             if (environmentManager != null)
@@ -106,6 +140,22 @@ namespace TreePlanQAQ.OrangeTree
         private void OnEnvironmentChanged(float temp, float humid, float sun)
         {
             UpdateEnvironmentDisplay(temp, humid, sun);
+        }
+
+        private void OnPauseStateChanged(bool paused)
+        {
+            UpdatePauseButtonText();
+            UpdatePauseImages();
+        }
+
+        private void OnPausePressFullyGray()
+        {
+            TogglePauseImages();
+        }
+
+        private void OnPausePressCancelled()
+        {
+            UpdatePauseImages();
         }
         
         private void UpdateUI()
@@ -194,6 +244,7 @@ namespace TreePlanQAQ.OrangeTree
             {
                 treeController.TogglePause();
                 UpdatePauseButtonText();
+                UpdatePauseImages();
                 Debug.Log($"生长状态: {(treeController.IsPaused ? "暂停" : "继续")}");
             }
             else
@@ -228,6 +279,40 @@ namespace TreePlanQAQ.OrangeTree
             {
                 pauseButtonText.text = treeController.IsPaused ? "继续" : "暂停";
             }
+        }
+
+        /// <summary>
+        /// 更新开始/暂停图片显示
+        /// </summary>
+        private void UpdatePauseImages()
+        {
+            if (treeController == null)
+            {
+                return;
+            }
+
+            // 暂停时显示 StartImage（继续），运行时显示 PauseImage（暂停）
+            if (startImage != null)
+            {
+                startImage.SetActive(treeController.IsPaused);
+            }
+
+            if (pauseImage != null)
+            {
+                pauseImage.SetActive(!treeController.IsPaused);
+            }
+        }
+
+        private void TogglePauseImages()
+        {
+            if (startImage == null || pauseImage == null)
+            {
+                return;
+            }
+
+            bool startVisible = startImage.activeSelf;
+            startImage.SetActive(!startVisible);
+            pauseImage.SetActive(startVisible);
         }
     }
 }

@@ -27,6 +27,7 @@ public class TopIconsController : MonoBehaviour
     
     private bool isPaused = false;
     private bool wasPausedBeforePanel = false; // 记录打开面板前的暂停状态
+    private TopIconPressGrayController pausePressGrayController;
 
     private void Start()
     {
@@ -34,6 +35,19 @@ public class TopIconsController : MonoBehaviour
         if (treeController == null)
         {
             treeController = FindObjectOfType<OrangeTreeController>();
+        }
+
+        EnsurePressGrayController(settingsButton);
+        EnsurePressGrayController(hintButton);
+        EnsurePressGrayController(pauseButton);
+
+        if (pauseButton != null)
+        {
+            pausePressGrayController = pauseButton.GetComponent<TopIconPressGrayController>();
+            if (pausePressGrayController != null)
+            {
+                pausePressGrayController.SetPressCallbacks(OnPausePressFullyGray, OnPausePressCancelled);
+            }
         }
         
         // 绑定按钮事件
@@ -290,6 +304,16 @@ public class TopIconsController : MonoBehaviour
         }
     }
 
+    private void OnPausePressFullyGray()
+    {
+        TogglePauseIconVisual();
+    }
+
+    private void OnPausePressCancelled()
+    {
+        UpdatePauseIcon();
+    }
+
     /// <summary>
     /// 更新暂停图标
     /// </summary>
@@ -309,9 +333,35 @@ public class TopIconsController : MonoBehaviour
             {
                 pauseIconText.text = "⏸"; // 播放时显示暂停图标（更紧凑的符号）
             }
-            
-            pauseIconText.color = Color.white; // 始终保持白色
+
+            pauseIconText.color = Color.white; // 默认保持白色，按下时由 TopIconPressGrayController 暂时灰化
         }
+    }
+
+    private void TogglePauseIconVisual()
+    {
+        if (pauseIconText == null)
+        {
+            return;
+        }
+
+        pauseIconText.text = pauseIconText.text == "▶" ? "⏸" : "▶";
+    }
+
+    private void EnsurePressGrayController(Button button)
+    {
+        if (button == null)
+        {
+            return;
+        }
+
+        TopIconPressGrayController pressGrayController = button.GetComponent<TopIconPressGrayController>();
+        if (pressGrayController == null)
+        {
+            pressGrayController = button.gameObject.AddComponent<TopIconPressGrayController>();
+        }
+
+        pressGrayController.RefreshCache();
     }
 
     /// <summary>

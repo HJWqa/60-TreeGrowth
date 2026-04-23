@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.UI;
+using TreePlanQAQ.OrangeTree;
 
 /// <summary>
 /// 设置左上角图标的编辑器工具
@@ -141,6 +142,8 @@ public class SetupTopIcons : EditorWindow
         colors.pressedColor = new Color(0.7f, 0.7f, 0.7f);
         button.colors = colors;
 
+        TopIconPressGrayController pressGrayController = btnObj.AddComponent<TopIconPressGrayController>();
+
         // 创建图标文本
         GameObject textObj = new GameObject("Icon");
         textObj.transform.SetParent(btnObj.transform, false);
@@ -156,6 +159,11 @@ public class SetupTopIcons : EditorWindow
         text.fontSize = 64; // 从 32 放大到 64（两倍）
         text.alignment = TextAnchor.MiddleCenter;
         text.color = iconColor;
+
+        if (pressGrayController != null)
+        {
+            pressGrayController.RefreshCache();
+        }
 
         return button;
     }

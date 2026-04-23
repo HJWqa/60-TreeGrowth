@@ -141,11 +141,15 @@ namespace TreePlanQAQ.Editor
             {
                 "OrangeTree_Seed",
                 "OrangeTree_Sprout",
+                "OrangeTree_Seedling",
+                "OrangeTree_YoungTree",
+                "OrangeTree_MatureTree",
+                "OrangeTree_Fruiting",
+                "OrangeTree_Harvest",
+                // 兼容旧命名，避免历史资源仍然可用时被误判
                 "OrangeTree_Seeding",
                 "OrangeTree_YoungTreet",
-                "OrangeTree_MatureTree",
-                "OrangeTree_Fruting",
-                "OrangeTree_Harvest"
+                "OrangeTree_Fruting"
             };
             
             foreach (string modelName in modelNames)
